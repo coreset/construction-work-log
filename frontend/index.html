@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Construction Work Log</title>
+
+  <!--
+    FOUC prevention — runs synchronously before the first paint.
+    Priority order: localStorage override → OS prefers-color-scheme → light fallback.
+    Sets data-theme on <html> so every CSS variable resolves to the correct value
+    from frame 0, with no flash or flicker.
+  -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('cwl-theme');
+        var osDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = stored === 'dark' || stored === 'light'
+          ? stored
+          : osDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (_) {
+        // localStorage blocked (private browsing, etc.) — silently fall back to light
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>
