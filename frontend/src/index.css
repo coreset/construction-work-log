@@ -1,0 +1,287 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS — CSS Variables
+   Light values live in :root. Dark overrides live in [data-theme="dark"].
+   Tailwind color tokens (tailwind.config.js) reference these vars, so
+   every Tailwind class automatically adapts — no JS class toggling.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Brand */
+  --color-primary:        #1890ff;
+  --color-primary-hover:  #40a9ff;
+  --color-primary-active: #096dd9;
+  --color-success:        #52c41a;
+  --color-warning:        #faad14;
+  --color-error:          #ff4d4f;
+
+  /* Text */
+  --color-text-heading:   rgba(0, 0, 0, 0.85);
+  --color-text-secondary: rgba(0, 0, 0, 0.45);
+  --color-text-disabled:  rgba(0, 0, 0, 0.25);
+
+  /* Borders */
+  --color-border:  #d9d9d9;
+  --color-divider: #f0f0f0;
+
+  /* Backgrounds */
+  --color-bg-page:         #f0f2f5;
+  --color-bg-component:    #ffffff;
+  --color-bg-hover:        #f5f5f5;
+  --color-bg-table-header: #fafafa;
+  --color-bg-disabled:     #f5f5f5;
+
+  /* Status backgrounds (alerts, toasts) */
+  --color-success-bg:     #f6ffed;
+  --color-success-border: #b7eb8f;
+  --color-error-bg:       #fff2f0;
+  --color-error-border:   #ffccc7;
+  --color-warning-bg:     #fffbe6;
+  --color-warning-border: #ffe58f;
+  --color-info-bg:        #e6f7ff;
+  --color-info-border:    #91d5ff;
+
+  /* Shadows */
+  --shadow-card-hover: 0 2px 8px rgba(0, 0, 0, 0.09);
+  --shadow-dropdown:   0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-modal:      0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-input-focus: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  --shadow-header:     0 2px 8px rgba(0, 0, 0, 0.09);
+
+  /* Overlay */
+  --color-overlay: rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] {
+  /* Brand — Ant Design dark palette */
+  --color-primary:        #177ddc;
+  --color-primary-hover:  #3c9ae8;
+  --color-primary-active: #095cb5;
+  --color-success:        #49aa19;
+  --color-warning:        #d89614;
+  --color-error:          #dc4446;
+
+  /* Text */
+  --color-text-heading:   rgba(255, 255, 255, 0.85);
+  --color-text-secondary: rgba(255, 255, 255, 0.45);
+  --color-text-disabled:  rgba(255, 255, 255, 0.25);
+
+  /* Borders */
+  --color-border:  #434343;
+  --color-divider: #303030;
+
+  /* Backgrounds */
+  --color-bg-page:         #141414;
+  --color-bg-component:    #1f1f1f;
+  --color-bg-hover:        #262626;
+  --color-bg-table-header: #1d1d1d;
+  --color-bg-disabled:     #2a2a2a;
+
+  /* Status backgrounds */
+  --color-success-bg:     #162312;
+  --color-success-border: #274916;
+  --color-error-bg:       #2a1215;
+  --color-error-border:   #58181c;
+  --color-warning-bg:     #2b2111;
+  --color-warning-border: #594214;
+  --color-info-bg:        #111b26;
+  --color-info-border:    #153450;
+
+  /* Shadows (stronger on dark to remain perceptible) */
+  --shadow-card-hover: 0 2px 8px rgba(0, 0, 0, 0.40);
+  --shadow-dropdown:   0 2px 8px rgba(0, 0, 0, 0.50);
+  --shadow-modal:      0 4px 12px rgba(0, 0, 0, 0.55);
+  --shadow-input-focus: 0 0 0 2px rgba(23, 125, 220, 0.25);
+  --shadow-header:     0 2px 8px rgba(0, 0, 0, 0.40);
+
+  /* Overlay */
+  --color-overlay: rgba(0, 0, 0, 0.65);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   THEME TRANSITIONS
+   .theme-ready is added by useTheme after React mounts — this ensures
+   transitions only run on user-triggered toggles, never on the initial
+   paint (which would cause a visible flash even without FOUC).
+   prefers-reduced-motion: strip all transitions for accessibility.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.theme-ready,
+.theme-ready * {
+  transition-property: background-color, color, border-color, box-shadow, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-ready,
+  .theme-ready * {
+    transition: none !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   GLOBAL BASE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-text-heading);
+    background-color: var(--color-bg-page);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   COMPONENT LAYER — all colors via CSS variables, zero hardcoded hex
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+
+  /* ── Input / Select ──────────────────────────────────────────────── */
+  .ant-input {
+    display: block;
+    width: 100%;
+    padding: 4px 11px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-text-heading);
+    background-color: var(--color-bg-component);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: none;
+  }
+  .ant-input::placeholder        { color: var(--color-text-disabled); }
+  .ant-input:hover               { border-color: var(--color-primary); }
+  .ant-input:focus                {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-input-focus);
+  }
+  .ant-input.is-error            { border-color: var(--color-error); }
+  .ant-input.is-error:focus      { box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2); }
+  .ant-input:disabled {
+    background-color: var(--color-bg-disabled);
+    color: var(--color-text-disabled);
+    cursor: not-allowed;
+    border-color: var(--color-border);
+  }
+
+  /* ── Buttons ────────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    height: 32px;
+    padding: 0 16px;
+    line-height: 1;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn:disabled { cursor: not-allowed; opacity: 0.4; }
+
+  .btn-primary {
+    @apply btn;
+    color: #ffffff;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  .btn-primary:hover:not(:disabled)  {
+    background-color: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+  }
+  .btn-primary:active:not(:disabled) {
+    background-color: var(--color-primary-active);
+    border-color: var(--color-primary-active);
+  }
+
+  .btn-default {
+    @apply btn;
+    color: var(--color-text-heading);
+    background-color: var(--color-bg-component);
+    border-color: var(--color-border);
+  }
+  .btn-default:hover:not(:disabled) {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .btn-danger {
+    @apply btn;
+    color: #ffffff;
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+  }
+  .btn-danger:hover:not(:disabled) {
+    background-color: #ff7875;
+    border-color: #ff7875;
+  }
+
+  .btn-text {
+    @apply btn;
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--color-primary);
+    padding: 0 8px;
+  }
+  .btn-text:hover:not(:disabled) {
+    background-color: rgba(24, 144, 255, 0.06);
+  }
+
+  .btn-icon {
+    @apply btn;
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--color-text-secondary);
+    height: 32px;
+    width: 32px;
+    padding: 0;
+    border-radius: 6px;
+  }
+  .btn-icon:hover:not(:disabled) {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-heading);
+  }
+
+  .btn-sm  { height: 24px; padding: 0 8px;  font-size: 12px; }
+  .btn-lg  { height: 40px; padding: 0 24px; font-size: 16px; }
+
+  /* ── Form helpers ───────────────────────────────────────────────── */
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-heading);
+    margin-bottom: 4px;
+  }
+  .form-error {
+    font-size: 12px;
+    color: var(--color-error);
+    margin-top: 4px;
+  }
+
+  /* ── Card ───────────────────────────────────────────────────────── */
+  .ant-card {
+    background-color: var(--color-bg-component);
+    border: 1px solid var(--color-divider);
+    border-radius: 6px;
+    padding: 24px;
+  }
+}
